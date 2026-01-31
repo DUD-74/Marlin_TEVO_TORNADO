@@ -189,8 +189,20 @@
 // Macros to evaluate simple option switches
 #define _ENA_1(O)           _ISENA(CAT(_IS,CAT(ENA_, O)))
 #define _DIS_1(O)           NOT(_ENA_1(O))
-#define ENABLED(V...)       DO(ENA,&&,V)
-#define DISABLED(V...)      DO(DIS,&&,V)
+#ifdef __INTELLISENSE__
+  // Simplified definitions for MSVC IntelliSense which does not support
+  // the full GNU preprocessor trickery used below. These are only used
+  // during static analysis and are intentionally conservative.
+  #define ENABLED(...) 0
+  #define DISABLED(...) 1
+  #define ANY(...) 0
+  #define ALL(...) 0
+  #define NONE(...) 1
+  #define COUNT_ENABLED(...) 0
+  #else
+  #define ENABLED(V...)       DO(ENA,&&,V)
+  #define DISABLED(V...)      DO(DIS,&&,V)
+#endif
 #define ANY(V...)          !DISABLED(V)
 #define ALL(V...)           ENABLED(V)
 #define NONE(V...)          DISABLED(V)
